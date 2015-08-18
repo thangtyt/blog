@@ -11,7 +11,9 @@ module.exports = function(sequelize, DataTypes) {
         },
         title: DataTypes.STRING,
         content:DataTypes.TEXT,
-        desc:DataTypes.STRING
+        desc:DataTypes.STRING,
+        author:DataTypes.INTEGER,
+        category:DataTypes.STRING
     });
     post.sync();
     return post;
