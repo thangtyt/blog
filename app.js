@@ -15,6 +15,7 @@ let app = express();
 
 global.db=new Sequelize(config.db.database,config.db.username,config.db.password,config.db);
 db['post'] = db.import(__dirname+'/backend/models/post');
+db['category'] = db.import(__dirname+'/backend/models/category');
 // view engine setup
 //app.set('views', path.join(__dirname, 'backend/views'));
 app.set('view engine', 'html');

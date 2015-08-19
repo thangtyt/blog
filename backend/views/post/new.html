@@ -1,14 +1,7 @@
 {% extends 'layout.html' %}
 {% block cssExtends %}
-  <link rel="stylesheet" href="/editor/Trumbowyg/dist/ui/trumbowyg.min.css">
-  <style>
-    .multiselectable { width:100%; display:block; overflow: hidden; width: 100%; }
-    .multiselectable select, .multiselectable div { width: 100%; float:left; }
-    .multiselectable div * { display: block; margin: 0 auto; }
-    .multiselectable div { display: inline; }
-    .multiselectable .m-selectable-controls { margin: 3em; width: 50px; }
-    .multiselectable .m-selectable-controls button { margin: 1em; }
-  </style>
+  <link rel="stylesheet" href="/plugins/Trumbowyg/dist/ui/trumbowyg.min.css">
+  <link rel="stylesheet" href="/plugins/multiselect/src/bootstrap-duallistbox.css">
 {% endblock %}
 {% block content %}
   <div class="row">
@@ -19,8 +12,8 @@
         </div>
         <div class="panel-body">
           <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
+            {#<div class="col-md-1"></div>#}
+            <div class="col-md-12">
 
               <form role="form">
                 <div class="form-group">
@@ -37,14 +30,18 @@
                 </div>
                 <div class="form-group">
                   <select class="form-control" id="categories" multiple="multiple" size="8">
-                    <option>News</option>
+                    {% if categories %}
+                      {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                      {% endfor %}
+                    {% endif %}
                   </select>
                 </div>
                 <button type="submit" class="btn btn-default">Add New Post</button>
                 <button type="reset" class="btn btn-primary">Reset</button>
               </form>
             </div>
-            <div class="col-md-1"></div>
+            {#<div class="col-md-1"></div>#}
           </div>
         </div>
       </div>
@@ -52,17 +49,18 @@
   </div>
 {% endblock %}
 {% block jsExtends %}
-  <script src="/editor/Trumbowyg/dist/trumbowyg.min.js"></script>
-  <script src="/js/multiselect.js"></script>
+  <script src="/plugins/Trumbowyg/dist/trumbowyg.min.js"></script>
+  <script src="/plugins/multiselect/src/jquery.bootstrap-duallistbox.js"></script>
+
   <script>
     $(document).ready(function () {
-      $('#content').trumbowyg();
-      $('#categories').multiselectable({
-        selectableLabel: 'All Category',
-        selectedLabel: 'Categories choosen',
-        moveRightText: '>',
-        moveLeftText: '<'
+      $('#categories').bootstrapDualListbox({
+        selectedListLabel : 'Selected categories',
+        nonSelectedListLabel : 'All categories',
+        infoText: false,
+        infoTextEmpty: false
       });
+      $('#content').trumbowyg();
     })
   </script>
 {% endblock %}

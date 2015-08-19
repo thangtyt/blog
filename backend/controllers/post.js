@@ -2,19 +2,17 @@
  * Created by nguyenthang on 8/17/15.
  */
 'use strict';
-
+//let Promise = require('bluebird');
 module.exports.add = function (req,res) {
-    db.post.find({
-        where : {
-            id : 0
-        }
-    }).then(function (result) {
+        db.category.findAll()
+    .then(function (result) {
         if (result){
-            res.render('blog/new',{
-                title : 'Add New Post'
+            res.render('post/new',{
+                title : 'Add New Post',
+                categories : result
             });
         }else{
-            res.render('blog/new',{
+            res.render('post/new',{
                 title : 'Add New Post'
             });
         }
