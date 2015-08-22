@@ -10,5 +10,6 @@ module.exports = {
         password:'admin',
         dialect:'postgres',
         logging:true
-    }
+    },
+    pagination : 10
 }

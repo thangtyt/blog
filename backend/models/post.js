@@ -9,11 +9,22 @@ module.exports = function(sequelize, DataTypes) {
             primaryKey: true,
             autoIncrement: true
         },
-        title: DataTypes.STRING,
+        type : {
+            type : DataTypes.INTEGER,
+            validate : {
+                isIn : [[0,1]]
+            }
+        },
+        title: {
+            type : DataTypes.STRING,
+            unique : true
+        },
         content:DataTypes.TEXT,
         desc:DataTypes.STRING,
         author:DataTypes.INTEGER,
-        category:DataTypes.STRING
+        categories:{
+            type : DataTypes.JSON
+        }
     });
     post.sync();
     return post;

@@ -9,10 +9,10 @@ let config=require('./config');
 let nunjucks = require('nunjucks');
 let admin = require('./backend/route');
 let Sequelize = require('sequelize');
-
+let pagi = require('./filter/pagination');
 let app = express();
 
-
+global.__config = require('./config');
 global.db=new Sequelize(config.db.database,config.db.username,config.db.password,config.db);
 db['post'] = db.import(__dirname+'/backend/models/post');
 db['category'] = db.import(__dirname+'/backend/models/category');
@@ -21,11 +21,11 @@ db['category'] = db.import(__dirname+'/backend/models/category');
 app.set('view engine', 'html');
 
 
-nunjucks.configure(['backend/views','frontend/views'], {
+let env = nunjucks.configure(['backend/views','frontend/views'], {
   autoescape: true,
   express: app
 });
-
+env.addFilter('pagi',pagi);
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));

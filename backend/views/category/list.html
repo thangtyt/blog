@@ -7,19 +7,21 @@
   <div class="panel-body">
     <div class="table-responsive">
       <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline" role="grid">
-        <div class="row"><div class="col-sm-6">
-            <div class="dataTables_length" id="dataTables-example_length">
-              <label>
-                <select name="dataTables-example_length" aria-controls="dataTables-example" class="form-control input-sm">
-                  <option value="10">10</option>
-                  <option value="25">20</option>
-                  <option value="50">30</option>
-                </select> records per page</label>
-            </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <a href="/admin/category/new" class="btn btn-default">Add new category</a>
+            {#<div class="dataTables_length" id="dataTables-example_length">#}
+              {#<label>#}
+                {#<select name="dataTables-example_length" aria-controls="dataTables-example" class="form-control input-sm">#}
+                  {#<option value="10">10</option>#}
+                  {#<option value="25">20</option>#}
+                  {#<option value="50">30</option>#}
+                {#</select> records per page</label>#}
+            {#</div>#}
           </div>
           <div class="col-sm-6">
             <div id="dataTables-example_filter" class="dataTables_filter">
-              <label>Search  <input type="search" class="form-control input-sm" aria-controls="dataTables-example"></label>
+              <label>Search  <input type="search" id="search" value="{{ strSearch }}" class="form-control input-sm" aria-controls="dataTables-example"></label>
             </div>
           </div>
         </div>
@@ -35,11 +37,11 @@
           <tbody>
             {% if categories %}
               {% for category in categories %}
-                <tr class="gradeA{% if index1 %2 == 0 %}
+                <tr class="gradeA{% if loop.index1 %2 == 0 %}
                    odd{% else %}even{% endif %}">
-                    <td>{{ category.name }}</td>
+                    <td><a href="/admin/category/{{ category.id }}">{{ category.name }}</a></td>
                     <td>{{ category.desc }}</td>
-                    <td><a href="/admin/category/delete/{{ category.id }}">Delete</a></td>
+                    <td><a href="/admin/category/delete/{{ category.id }}/{{ currPage }}">Delete</a></td>
                   </tr>
               {% endfor %}
             {% endif %}
@@ -53,39 +55,24 @@
                {#10/57#}
             {#</div>#}
           {#</div>#}
-          <div class="col-sm-12">
-            <div class="dataTables_paginate paging_simple_numbers" id="dataTables-example_paginate">
-              <ul class="pagination">
-                <li class="paginate_button previous disabled" aria-controls="dataTables-example" tabindex="0" id="dataTables-example_previous">
-                  <a href="#">Previous</a>
-                </li>
-                <li class="paginate_button active" aria-controls="dataTables-example" tabindex="0">
-                  <a href="#">1</a>
-                </li>
-                <li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-                  <a href="#">2</a>
-                </li>
-                <li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-                  <a href="#">3</a>
-                </li>
-                <li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-                  <a href="#">4</a>
-                </li>
-                <li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-                  <a href="#">5</a>
-                </li>
-                <li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-                  <a href="#">6</a>
-                </li>
-                <li class="paginate_button next" aria-controls="dataTables-example" tabindex="0" id="dataTables-example_next">
-                  <a href="#">Next</a>
-                </li>
-              </ul>
-            </div>
-          </div>
+         {{ totalPage | pagi(currPage,'/admin/category/list/{page}/'+strSearch) | safe }}
         </div>
       </div>
     </div>
   </div>
 </div>
+{% endblock %}
+{% block jsExtends %}
+  <script>
+    $(document).ready(function () {
+      $('#search').keypress(function(e){
+        if (e.keyCode === 13){
+          var strSearch = $('#search').val();
+          window.location.href = '/admin/category/list/{{ currPage }}/'+strSearch;
+        }
+      });
+    })
+
+  </script>
+
 {% endblock %}

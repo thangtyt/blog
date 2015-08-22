@@ -4,12 +4,33 @@
 'use strict';
 
 module.exports.add = function (req,res) {
-    console.log('category add method get');
-    res.render('category/new',{
-        title : 'Add New Category'
-    });
+    let id = req.params.id || 0;
+    if (id===0){
+        res.render('category/new',{
+            title : 'Add New Category',
+            route : '/admin/category/save',
+            buttonSubmit : 'Create'
+        });
+    }else{
+        db.category.findOne({
+            where : {
+                id : id
+            }
+        }).then(function (result) {
+            res.render('category/new',{
+                title : 'Edit New Category',
+                category : result,
+                route : '/admin/category/edit',
+                buttonSubmit : 'Edit'
+            });
+        }).catch(function (err) {
+            res.render('error',{error : err.message});
+        })
+    }
+
 }
 module.exports.save = function (req,res) {
+
     console.log('category add method post');
     let form = req.body;
     db.category.create(form)
@@ -17,38 +38,125 @@ module.exports.save = function (req,res) {
             if (result){
                 res.render('category/new',{
                     title : 'Edit New Category',
-                    success : 'Create new category successful',
-                    category : result
+                    success : 'Create category successful',
+                    route : '/admin/category/edit',
+                    category : result,
+                    buttonSubmit : 'Edit'
                 });
             }else{
                 res.render('category/new',{
                     title : 'Add New Category',
-                    error : 'Create category unsuccessful'
+                    route : '/admin/category/new',
+                    error : 'Create category unsuccessful',
+                    buttonSubmit : 'Create'
                 });
             }
         })
         .catch(function (err) {
             res.render('category/new',{
-                title : 'Edit New Category',
+                title : 'Create New Category',
                 error : 'Category is existed ! Please try again !',
-                category : form
+                route : '/admin/category/new',
+                category : form,
+                buttonSubmit : 'create'
             });
         })
 }
+module.exports.update = function (req,res) {
+
+    console.log('category edit method post');
+    let form = req.body;
+    db.category.findOne({
+        where : {
+            id : form.id
+        }
+    }).then(function (category) {
+        category.updateAttributes(form)
+            .then(function (result) {
+                if (result){
+                    res.render('category/new',{
+                        title : 'Edit New Category',
+                        success : 'Edit category successful',
+                        route : '/admin/category/edit',
+                        category : result,
+                        buttonSubmit : 'Edit'
+                    });
+                }else{
+                    res.render('category/new',{
+                        title : 'Edit New Category',
+                        error : 'Edit category unsuccessful',
+                        route : '/admin/category/edit',
+                        buttonSubmit : 'Edit',
+                        category : result
+                    });
+                }
+        }).catch(function (err) {
+                res.render('category/new',{
+                    title : 'Edit New Category',
+                    success : 'Edit category successful',
+                    route : '/admin/category/edit',
+                    buttonSubmit : 'Edit',
+                    category : result
+                });
+            })
+    })
+    .catch(function (err) {
+        res.render('category/new',{
+            title : 'Edit New Category',
+            success : 'Edit category successful',
+            route : '/admin/category/edit',
+            buttonSubmit : 'Edit Post',
+            category : result
+        });
+    })
+
+}
 module.exports.list = function (req,res) {
-    let numOfPage = req.params.numOfPage || 10;
+    console.log('list');
+    let text=req.params.search || '';
+    let numOfPage = __config.pagination;
     let page = req.params.page || 1;
     db.category.findAndCountAll({
+        where : [" \"name\" ILIKE '%"+text+"%' OR \"desc\" ILIKE '%"+text+"%' "],
+        order : 'name DESC',
         limit : numOfPage,
         offset : (page-1)*numOfPage
     }).then(function (results) {
+        let totalPage = Math.ceil(results.count/numOfPage);
         res.render('category/list',{
             title : 'All Categories',
             categories : results.rows,
-            totalPage : Math.ceil(results.count/numOfPage)
+            totalPage : totalPage,
+            currPage : page,
+            strSearch : text
 
         });
     })
 
+}
+module.exports.delete = function (req,res){
+
+    let page = req.params.page || 1;
+    let id = req.params.id;
+    db.category.destroy({
+        where : {
+            id : id
+        }
+    }).then(function (result) {
+        if (result > 0){
+
+            db.category.count().then(function (count) {
+                let totalPage = Math.ceil(count/__config.pagination);
+                //console.log(totalPage+'total'+count+'page'+__config.pagination);
+                if (page > totalPage){
+                    page = totalPage;
+                }
+                res.redirect('/admin/category/list/'+page)
+            })
+
+        }else{
+            res.render('error',{error : 'Error when delete category id : '+id});
+        }
+    })
 }
 

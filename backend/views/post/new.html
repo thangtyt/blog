@@ -14,31 +14,58 @@
           <div class="row">
             {#<div class="col-md-1"></div>#}
             <div class="col-md-12">
-
-              <form role="form">
+              {% if error %}
+                <div class="panel panel-danger">
+                  <div class="panel-heading">
+                    {{ error }}
+                  </div>
+                </div>
+                {% elif success %}
+                <div class="panel panel-success">
+                  <div class="panel-heading">
+                    {{ success }}
+                  </div>
+                </div>
+              {% endif %}
+              <form role="form" method="post" action="{{ route }}">
+                <input type="hidden" name="id" value="{{ post.id }}">
                 <div class="form-group">
                   <label>Title</label>
-                  <input class="form-control">
+                  <input class="form-control" name="title" value="{{ post.title }}">
                 </div>
                 <div class="form-group">
                   <label>Description</label>
-                  <textarea name="desc" id="desc" class="form-control" rows="3"></textarea>
+                  <textarea name="desc" id="desc" class="form-control" rows="3">{{ post.desc }}</textarea>
                 </div>
                 <div class="form-group">
                   <label>Content</label>
-                  <textarea name="content" id="content" class="form-control" rows="5"></textarea>
+                  <textarea name="content" id="content" class="form-control" rows="5">{{ post.content }}</textarea>
                 </div>
                 <div class="form-group">
-                  <select class="form-control" id="categories" multiple="multiple" size="8">
+                  <select class="form-control" name="categories" id="categories" multiple="multiple" size="8">
                     {% if categories %}
                       {% for category in categories %}
-                        <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% set flag = true %}
+                        {% if post.categories.categories %}
+                          {% for cate in post.categories.categories %}
+                            {% if category.id == cate %}
+                              <option selected value="{{ category.id }}">{{ category.name }}</option>
+                              {% set flag = false %}
+                            {% endif %}
+                          {% endfor %}
+                          {% if flag == true %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                          {% endif %}
+                        {% else %}
+                          <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endif %}
                       {% endfor %}
                     {% endif %}
                   </select>
                 </div>
-                <button type="submit" class="btn btn-default">Add New Post</button>
+                <button type="submit" class="btn btn-default">{{ buttonSubmit }}</button>
                 <button type="reset" class="btn btn-primary">Reset</button>
+                <input type="hidden" value="1" name="type">
               </form>
             </div>
             {#<div class="col-md-1"></div>#}
@@ -61,6 +88,10 @@
         infoTextEmpty: false
       });
       $('#content').trumbowyg();
+      $('#desc').trumbowyg({
+        btns: ['bold', 'italic', '|', 'link'],
+        rows : 3
+      });
     })
   </script>
 {% endblock %}
