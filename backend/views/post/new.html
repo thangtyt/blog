@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% block cssExtends %}
-  <link rel="stylesheet" href="/plugins/Trumbowyg/dist/ui/trumbowyg.min.css">
+  <link rel="stylesheet" href="/plugins/summer/dist/summernote.css">
   <link rel="stylesheet" href="/plugins/multiselect/src/bootstrap-duallistbox.css">
 {% endblock %}
 {% block content %}
@@ -35,19 +35,19 @@
                 </div>
                 <div class="form-group">
                   <label>Description</label>
-                  <textarea name="desc" id="desc" class="form-control" rows="3">{{ post.desc }}</textarea>
+                  <textarea name="desc" id="desc" class="form-control" rows="3">{{ post.desc | safe }}</textarea>
                 </div>
                 <div class="form-group">
                   <label>Content</label>
-                  <textarea name="content" id="content" class="form-control" rows="5">{{ post.content }}</textarea>
+                  <textarea name="content" id="content" class="form-control" rows="5">{{ post.content | safe }}</textarea>
                 </div>
                 <div class="form-group">
                   <select class="form-control" name="categories" id="categories" multiple="multiple" size="8">
                     {% if categories %}
                       {% for category in categories %}
                         {% set flag = true %}
-                        {% if post.categories.categories %}
-                          {% for cate in post.categories.categories %}
+                        {% if post.categories %}
+                          {% for cate in post.categories %}
                             {% if category.id == cate %}
                               <option selected value="{{ category.id }}">{{ category.name }}</option>
                               {% set flag = false %}
@@ -76,7 +76,7 @@
   </div>
 {% endblock %}
 {% block jsExtends %}
-  <script src="/plugins/Trumbowyg/dist/trumbowyg.min.js"></script>
+  <script src="/plugins/tinymce/tinymce.min.js"></script>
   <script src="/plugins/multiselect/src/jquery.bootstrap-duallistbox.js"></script>
 
   <script>
@@ -87,11 +87,39 @@
         infoText: false,
         infoTextEmpty: false
       });
-      $('#content').trumbowyg();
-      $('#desc').trumbowyg({
-        btns: ['bold', 'italic', '|', 'link'],
-        rows : 3
-      });
+      tinymce.init({
+        selector : "#desc",
+        menu : {},
+        path : {},
+        statusbar: false,
+        elementpath: true,
+        toolbar: "undo redo | styleselect | bold italic | linkimage | alignleft | aligncenter | alignright"
+
+      })
+      tinymce.init({
+        selector : "#content",
+        menu : {},
+        path : {},
+        elementpath: true
+      })
+//      $('#desc').summernote({
+//        height: 100,
+//        toolbar: [
+//          ['font', ['bold', 'italic', 'underline']],
+//          ['color', ['color']]
+//        ]
+//      });
+//      $('#content').summernote({
+//        height: 200,
+//        toolbar: [
+//          ['font', ['bold', 'italic', 'underline']],
+//          ['color', ['color']],
+//          ['para', ['ul', 'ol', 'paragraph']],
+//          ['height', ['height']],
+//          ['insert', ['link', 'picture', 'hr']],
+//          ['view', ['fullscreen', 'codeview']]
+//        ]
+//      });
     })
   </script>
 {% endblock %}

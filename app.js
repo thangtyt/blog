@@ -2,7 +2,7 @@
 let express = require('express');
 let path = require('path');
 let favicon = require('serve-favicon');
-let logger = require('morgan');
+//let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
 let config=require('./config');
@@ -28,7 +28,7 @@ let env = nunjucks.configure(['backend/views','frontend/views'], {
 env.addFilter('pagi',pagi);
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

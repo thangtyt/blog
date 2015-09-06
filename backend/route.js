@@ -12,7 +12,9 @@ router.get('/', function(req, res, next) {
     res.render('index', { title: 'Administrator' });
 });
 
-
+router.get('/blog/post', function (req,res) {
+    blog.list(req,res);
+});
 //link to add new post
 router.get('/blog/post/new', function (req,res) {
     blog.add(req,res);

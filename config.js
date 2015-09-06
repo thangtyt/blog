@@ -6,7 +6,7 @@ module.exports = {
         host:'localhost',
         port:'5432',
         database:'blog',
-        username:'postgres',
+        username:'thangnv',
         password:'admin',
         dialect:'postgres',
         logging:true
