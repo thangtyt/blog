@@ -3,7 +3,7 @@
  */
 'use strict'
 module.exports = function(sequelize, DataTypes) {
-    let post =  sequelize.define('category', {
+    let categories =  sequelize.define('category', {
         id: {
             type : DataTypes.INTEGER,
             primaryKey: true,
@@ -13,8 +13,15 @@ module.exports = function(sequelize, DataTypes) {
             type:DataTypes.STRING,
             unique : true
         } ,
+        update : {
+            type:DataTypes.DATE
+        },
         desc:DataTypes.STRING
-    });
-    post.sync();
-    return post;
+    },
+        {
+            updatedAt : 'update'
+        }
+    );
+    categories.sync();
+    return categories;
 };

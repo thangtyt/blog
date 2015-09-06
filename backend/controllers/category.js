@@ -46,7 +46,7 @@ module.exports.save = function (req,res) {
             }else{
                 res.render('category/new',{
                     title : 'Add New Category',
-                    route : '/admin/category/new',
+                    route : '/admin/category/save',
                     error : 'Create category unsuccessful',
                     buttonSubmit : 'Create'
                 });
@@ -56,9 +56,9 @@ module.exports.save = function (req,res) {
             res.render('category/new',{
                 title : 'Create New Category',
                 error : 'Category is existed ! Please try again !',
-                route : '/admin/category/new',
+                route : '/admin/category/save',
                 category : form,
-                buttonSubmit : 'create'
+                buttonSubmit : 'Create'
             });
         })
 }
@@ -93,10 +93,10 @@ module.exports.update = function (req,res) {
         }).catch(function (err) {
                 res.render('category/new',{
                     title : 'Edit New Category',
-                    success : 'Edit category successful',
+                    error : 'Edit category unsuccessful',
                     route : '/admin/category/edit',
                     buttonSubmit : 'Edit',
-                    category : result
+                    category : form
                 });
             })
     })
